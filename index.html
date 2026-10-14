@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'">
+<title>Descubra o seu Perfil</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif;background:#eef2f8;color:#20304a;line-height:1.6}main{max-width:760px;margin:40px auto;padding:32px;background:white;border-radius:22px;box-shadow:0 15px 50px #20304a12}h1{font-size:clamp(28px,5vw,42px);line-height:1.15;margin:12px 0}h2{font-size:22px}.tag{color:#5143b5;font-weight:700;letter-spacing:.08em;font-size:12px}.notice{background:#edf6ff;border-left:4px solid #376ab0;padding:14px;border-radius:8px}.intro{color:#526077}.fields{display:grid;gap:16px;grid-template-columns:1fr 1fr}.fields label:first-child{grid-column:1/-1}input:not([type=radio]):not([type=checkbox]){width:100%;padding:12px;border:1px solid #aebbd0;border-radius:8px;font:inherit}fieldset{border:1px solid #d9e0ec;border-radius:12px;margin:22px 0;padding:16px}legend{font-weight:650;padding:0 6px}.option{display:block;padding:10px;margin:5px 0;border-radius:7px;background:#f6f7fb;cursor:pointer}input[type=radio],input[type=checkbox]{accent-color:#5143b5;margin-right:8px}.terms{font-size:8px;color:#a3a7af;margin-top:10px}.consent{display:block;font-size:13px}button{background:#5143b5;color:white;border:0;padding:14px 24px;font:inherit;font-weight:650;border-radius:10px;cursor:pointer}button:hover{background:#3e3297}:focus-visible{outline:3px solid #2673cc;outline-offset:4px}#result{margin-top:24px;padding:22px;border-radius:12px;background:#f0edff}#result:empty{display:none}summary{cursor:pointer;font-weight:600}footer{font-size:13px;color:#59667a;margin-top:28px}@media(max-width:600px){main{margin:16px;padding:22px}.fields{grid-template-columns:1fr}}
+</style>
+</head>
+<body><main>
+<span class="tag">ATIVIDADE PRÁTICA · DESENVOLVIMENTO WEB</span>
+<h1>Descubra o seu Perfil</h1>
+<p class="intro">Como costuma enfrentar os desafios do dia a dia? Responda a cinco perguntas e explore as suas preferências.</p>
+<p class="notice"><strong>Demonstração académica.</strong> Use dados fictícios. Os dados introduzidos não são guardados nem enviados pela aplicação. Este teste é recreativo e não constitui avaliação psicológica.</p>
+<noscript>Ative o JavaScript para responder ao teste e consultar o resultado.</noscript>
+<form id="quiz" autocomplete="off">
+<h2>Os seus dados fictícios</h2>
+<!-- ASVS V2.1.1 / V2.2.1: limites de tamanho e formatos declarados; validação apenas para usabilidade, sem servidor ou decisão de segurança (V2.2.2). -->
+<div class="fields">
+<label>Nome fictício<input id="person" type="text" maxlength="80" required placeholder="Ex.: Ana Exemplo"></label>
+<label>E-mail fictício<input type="email" maxlength="254" required placeholder="ana@example.com"></label>
+<label>Data de nascimento fictícia<input id="birth" type="date" min="1900-01-01" required></label>
+</div>
+<div id="questions"></div>
+<label class="consent"><input id="consent" type="checkbox" required>Aceito os Termos de Uso e a Política de Privacidade simulados.</label>
+<p class="terms">Termos de Uso e Política de Privacidade — SIMULAÇÃO: ao aceitar, autorizaria a recolha de nome, e-mail, data de nascimento e respostas, o tratamento para criação de perfis, a partilha com parceiros e a utilização para análise e comunicações promocionais. Esta cláusula é fictícia e demonstra consentimento de baixa visibilidade; não produz recolha, partilha ou autorização real.</p>
+<button type="submit">Ver Resultado</button>
+</form>
+<section id="result" aria-live="polite" tabindex="-1"></section>
+<details style="margin-top:24px"><summary>O que esta interface demonstra?</summary><p>Os termos acima usam letra de 8 px e contraste reduzido para demonstrar o padrão opaco pedido na atividade. Numa interface responsável, as finalidades seriam legíveis e as escolhas claras, específicas e livres. Aqui, o aviso é visível e o consentimento é apenas simulado.</p></details>
+<footer>HTML, CSS e JavaScript · Sem bibliotecas externas · Sem armazenamento de dados do formulário</footer>
+</main>
+<script>
+'use strict';
+(() => {
+const questions = [
+['Num trabalho em grupo, prefere…','Organizar tarefas e definir um plano.','Propor ideias e experimentar alternativas.','Ouvir os colegas e aproximar opiniões.'],
+['Perante um problema inesperado, costuma…','Analisar os factos antes de agir.','Experimentar uma solução diferente.','Pedir opiniões e construir uma solução em conjunto.'],
+['Num dia livre, escolheria…','Uma atividade planeada com antecedência.','Explorar um lugar ou hobby novo.','Passar tempo com pessoas próximas.'],
+['Ao aprender algo novo, prefere…','Instruções claras e etapas bem definidas.','Descobrir através da experimentação.','Aprender com outras pessoas.'],
+['O que mais valoriza num projeto?','Clareza, organização e consistência.','Originalidade e liberdade para criar.','Cooperação e boas relações.']
+];
+const container = document.getElementById('questions');
+questions.forEach((q,index) => {
+ const group=document.createElement('fieldset');
+ const legend=document.createElement('legend');
+ // ASVS V1.2.1 / V3.2.2: usar textContent em vez de interpretar texto como HTML.
+ legend.textContent=(index+1)+'. '+q[0];group.append(legend);
+ q.slice(1).forEach((answer,choice) => {
+  const label=document.createElement('label');label.className='option';
+  const radio=document.createElement('input');radio.type='radio';radio.name='q'+index;radio.value=String(choice);radio.required=true;
+  label.append(radio,document.createTextNode(answer));group.append(label);
+ });container.append(group);
+});
+const today=new Date();
+document.getElementById('birth').max=today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
+const form=document.getElementById('quiz');
+form.addEventListener('submit',event => {
+ event.preventDefault();if(!form.reportValidity())return;
+ const scores=[0,0,0];
+ // ASVS V2.2.1: respostas limitadas aos valores previstos.
+ for(let i=0;i<questions.length;i++){
+  const selected=form.querySelector('input[name="q'+i+'"]:checked');
+  if(!selected || !['0','1','2'].includes(selected.value))return;
+  scores[Number(selected.value)]++;
+ }
+ const descriptions=['Organizador: nas suas respostas, prefere planeamento, análise e estrutura.','Explorador: nas suas respostas, prefere criatividade, novidades e experimentação.','Colaborador: nas suas respostas, prefere diálogo, cooperação e relações pessoais.'];
+ const highest=Math.max(...scores);
+ const winners=descriptions.filter((_,i)=>scores[i]===highest);
+ const result=document.getElementById('result');
+ result.replaceChildren();
+ const heading=document.createElement('h2');heading.textContent='O seu resultado';
+ const text=document.createElement('p');text.textContent=(winners.length>1?'Perfil misto. ':'')+winners.join(' ');
+ const note=document.createElement('p');note.textContent='Resultado recreativo baseado apenas nas cinco respostas. Não é um diagnóstico nem um teste validado cientificamente.';
+ result.append(heading,text,note);result.focus();
+ // ASVS V14.3.3: nenhum dado é colocado em localStorage, cookies ou outro armazenamento. Sem pedidos de rede.
+ form.reset();
+});
+})();
+</script></body></html>
